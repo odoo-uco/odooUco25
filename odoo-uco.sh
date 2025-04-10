@@ -144,11 +144,10 @@ if ! command -v docker-compose &> /dev/null; then
     install_docker_compose
 fi
 
-# Comprobar si docker-compose está instalado
-if ! command -v posgreesql &> /dev/null; then
+# Comprobar si postgresql está instalado
+if ! command -v psql &> /dev/null; then
     install_postgreesql
 fi
-
 
 # Comprobar si Docker Deamon esta activo
 if [ $(systemctl status docker | grep Active | sed -n 's/.*Active:[[:space:]]*\([^[:space:]]*\).*/\1/p') != "active" ]
