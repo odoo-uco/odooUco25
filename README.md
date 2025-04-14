@@ -100,7 +100,6 @@ sudo mv {nombre_del_modulo} odooUco25/external-addons/
 
 ```bash
 ./odoo-uco.sh -stop
-```bash
 ./odoo-uco.sh -start
 ```
 ## 6. Actualizar la Lista de Aplicaciones en Odoo
