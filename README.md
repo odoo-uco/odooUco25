@@ -85,24 +85,24 @@ Utiliza `scp` para copiar la carpeta del módulo al servidor a través de SSH. P
 
 ```bash
 scp -i "Odoo-UCO.pem" -r "{nombre_del_modulo}" ubuntu@ec2-54-217-168-42.eu-west-1.compute.amazonaws.com:~
-
+```
 ## 3. Conectar al Servidor vía SSH
 
 ```bash
 ssh -i "Odoo-UCO.pem" ubuntu@ec2-54-217-168-42.eu-west-1.compute.amazonaws.com
-
+```
 ## 4. Mover el Módulo a la Carpeta external-addons
 
 ```bash
 sudo mv {nombre_del_modulo} odooUco25/external-addons/
-
+```
 ## 5. Reiniciar el Servicio de Odoo
 
 ```bash
 ./odoo-uco.sh -stop
 ```bash
 ./odoo-uco.sh -start
-
+```
 ## 6. Actualizar la Lista de Aplicaciones en Odoo
 Accede a Odoo a través de tu navegador.
 
@@ -112,3 +112,4 @@ Si la opción Actualizar Lista de Aplicaciones no aparece, activa el modo desarr
 
 ```bash
 http://ec2-54-217-168-42.eu-west-1.compute.amazonaws.com/web?debug=1
+```
