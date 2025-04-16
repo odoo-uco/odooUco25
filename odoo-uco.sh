@@ -133,6 +133,76 @@ start_daemon() {
     fi
 }
 
+make_backup() {
+    echo -e "[+] Haciendo copia de seguridad...\n"
+    cd config
+    if [ -f backup_postgres.sql ]
+    then
+        mv backup_postgres.sql backup_postgres_ant.sql
+    fi
+
+    sudo docker-compose exec postgres pg_dumpall -U admin > backup_postgres.sql
+
+    if [ "$?" -eq 0 ]
+    then
+        echo -e "[+] Copia de seguridad creada con exito...\n"
+        if [ -f backup_postgres_ant.sql ]
+        then
+            echo -e "[+] Eliminando copia de seguridad antigua...\n"
+            rm backup_postgres_ant.sql
+        fi
+        else
+            echo -e "[-] Ha surgido un error en la creación de la copia de seguridad\n"
+            if [ -f backup_postgres_ant.sql ]
+            then
+                echo -e "[-] Manteniendo ultima copia de seguridad\n"
+                if [ -f backup_postgres.sql ]
+                then
+                    rm backup_postgres.sql
+                fi
+                mv backup_postgres_ant.sql backup_postgres.sql
+            fi
+            exit -1
+    fi
+    cd ..
+}
+
+restore_backup() {
+    echo -e "[/] ¿Estas seguro de querer restaurar todo?\n"
+    read -p "[/] Perderas todo el progreso que no se haya guardado [y/N]:  " opc
+
+    if [[ "$opc" == "y" || "$opc" == "Y" ]]
+    then
+        echo -e "[+] Restaurando copia de seguridad...\n"
+        echo -e "[+] Eliminando base de datos anteriór...\n"
+        cd config
+
+        sudo docker-compose down --rmi all -v
+        if [ "$?" -ne 0 ]
+        then
+            echo -e "[-] Ha surgido un error en el borrado de la BBDD anterior\n"
+            exit -1
+        fi
+        cd ..
+
+        start_container
+
+        echo -e "[+] Restaurando base de datos...\n"
+        cd config
+        sleep 5
+        cat backup_postgres.sql | sudo docker-compose -f docker-compose.yml exec -T postgres psql -U admin -d postgres
+        if [ "$?" -ne 0 ]
+        then
+            echo -e "[-] Ha surgido un error en la restauración de la BBDD\n"
+            exit -1
+        fi
+        echo -e "[+] Restauración realizada con éxito...\n"
+
+        cd ..
+        else
+            echo -e "[+] Cancelando restauración de la copia de seguridad...\n"
+    fi
+}
 
 # Comprobar si docker está instalado
 if ! command -v docker &> /dev/null; then
@@ -163,9 +233,19 @@ if [ "$1" == "-start" ]; then
 elif [ "$1" == "-stop" ]; then
     stop_container
 
+elif [ "$1" == "-backup" ]
+then
+    make_backup
+
+elif [ "$1" == "-restore" ]
+then
+    restore_backup
+
 else
     echo "Uso: $0 { -start | -stop }"
     echo "  -start: Inicia el despliegue del contenedor"
     echo "  -stop: Detiene la ejecución del contenedor"
+    echo "  -backup: Hace una copia de seguridad de todo"
+    echo "  -restore: Restaura la ultima copia de seguridad creada"
     exit 1
 fi

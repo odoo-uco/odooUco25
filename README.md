@@ -8,14 +8,14 @@ Se puede utilizar como plantilla para el seminario 2 de Sistemas de Información
 
 <p align="center">
 
-                      ███████        █████
-                    ███░░░░░███     ░░███
-                   ███     ░░███  ███████   ██████   ██████
-                  ░███      ░███ ███░░███  ███░░███ ███░░███
-                  ░███      ░███░███ ░███ ░███ ░███░███ ░███
-                  ░░███     ███ ░███ ░███ ░███ ░███░███ ░███
-                   ░░░███████░  ░░████████░░██████ ░░██████
-                     ░░░░░░░     ░░░░░░░░  ░░░░░░   ░░░░░░
+    ███████        █████
+  ███░░░░░███     ░░███
+ ███     ░░███  ███████   ██████   ██████
+░███      ░███ ███░░███  ███░░███ ███░░███
+░███      ░███░███ ░███ ░███ ░███░███ ░███
+░░███     ███ ░███ ░███ ░███ ░███░███ ░███
+ ░░░███████░  ░░████████░░██████ ░░██████
+   ░░░░░░░     ░░░░░░░░  ░░░░░░   ░░░░░░
 
 </p>
 
@@ -59,6 +59,16 @@ Para instalar y ejecutar este proyecto en tu entorno local, sigue estos pasos:
    ```bash
    ./odoo-uco.sh -start
    ```
+
+## Flags del Script de instalación
+
+- -start -> Inicia el servicio de Odoo
+
+- -stop -> Para el servicio de Odoo
+
+- -backup -> Crea localmente una copia de seguridad en config/
+
+- -restore -> Restaura la copia de seguridad que haya en config/
 
 ## Configuración
 
