@@ -8,14 +8,14 @@ Se puede utilizar como plantilla para el seminario 2 de Sistemas de Información
 
 <p align="center">
 
-    ███████        █████
-  ███░░░░░███     ░░███
- ███     ░░███  ███████   ██████   ██████
-░███      ░███ ███░░███  ███░░███ ███░░███
-░███      ░███░███ ░███ ░███ ░███░███ ░███
-░░███     ███ ░███ ░███ ░███ ░███░███ ░███
- ░░░███████░  ░░████████░░██████ ░░██████
-   ░░░░░░░     ░░░░░░░░  ░░░░░░   ░░░░░░
+          ███████        █████
+        ███░░░░░███     ░░███
+       ███     ░░███  ███████   ██████   ██████
+      ░███      ░███ ███░░███  ███░░███ ███░░███
+      ░███      ░███░███ ░███ ░███ ░███░███ ░███
+      ░░███     ███ ░███ ░███ ░███ ░███░███ ░███
+       ░░░███████░  ░░████████░░██████ ░░██████
+         ░░░░░░░     ░░░░░░░░  ░░░░░░   ░░░░░░
 
 </p>
 
@@ -76,10 +76,6 @@ Este proyecto utiliza un archivo `.env` para configurar variables de entorno y u
 
 Para visualizar el panel de Odoo, ve al navegador y busca `http://localhost:8069`
 
-
-
-
-
 # Instrucciones para Instalar un Módulo en Odoo (AWS)
 
 Antes de instalar un módulo en la instancia de Odoo alojada en AWS, **comprueba primero en local que funcione perfectamente y sin problemas**. A continuación, se detallan los pasos a seguir:
@@ -96,23 +92,28 @@ Utiliza `scp` para copiar la carpeta del módulo al servidor a través de SSH. P
 ```bash
 scp -i "Odoo-UCO.pem" -r "{nombre_del_modulo}" ubuntu@ec2-54-217-168-42.eu-west-1.compute.amazonaws.com:~
 ```
+
 ## 3. Conectar al Servidor vía SSH
 
 ```bash
 ssh -i "Odoo-UCO.pem" ubuntu@ec2-54-217-168-42.eu-west-1.compute.amazonaws.com
 ```
+
 ## 4. Mover el Módulo a la Carpeta external-addons
 
 ```bash
 sudo mv {nombre_del_modulo} odooUco25/external-addons/
 ```
+
 ## 5. Reiniciar el Servicio de Odoo
 
 ```bash
 ./odoo-uco.sh -stop
 ./odoo-uco.sh -start
 ```
+
 ## 6. Actualizar la Lista de Aplicaciones en Odoo
+
 Accede a Odoo a través de tu navegador.
 
 En la barra superior, ve a Aplicaciones y selecciona Actualizar Lista de Aplicaciones para que el sistema reconozca el nuevo módulo.
