@@ -146,9 +146,12 @@ make_backup() {
     if [ "$?" -eq 0 ]
     then
         echo -e "[+] Copia de seguridad creada con exito...\n"
+
+        name=backup_$(date '+%d-%m-%Y_%H-%M')_manual.sql
+        cp backup_postgres.sql ../backups/"$name"
         if [ -f backup_postgres_ant.sql ]
         then
-            echo -e "[+] Eliminando copia de seguridad antigua...\n"
+            echo -e "[+] Eliminando copia de seguridad antigua de config/...\n"
             rm backup_postgres_ant.sql
         fi
         else
@@ -168,12 +171,25 @@ make_backup() {
 }
 
 restore_backup() {
-    echo -e "[/] ¿Estas seguro de querer restaurar todo?\n"
+    echo -e "[/] ¿Estas seguro de querer restaurar todo?"
     read -p "[/] Perderas todo el progreso que no se haya guardado [y/N]:  " opc
 
     if [[ "$opc" == "y" || "$opc" == "Y" ]]
     then
-        echo -e "[+] Restaurando copia de seguridad...\n"
+        echo -e "\n[/] Elige que backup utilizar (ruta relativa)"
+        read -p "[/] Por omisión config/backup_postgres.sql (Ultima Creada):  " back
+
+        if [ "$back" == "" ]
+        then
+            back=config/backup_postgres.sql
+        fi
+        if [ ! -f "$back" ]
+        then
+            echo -e "\n[-] El fichero $back no existe\n"
+            exit -1
+        fi
+
+        echo -e "\n[+] Restaurando copia de seguridad...\n"
         echo -e "[+] Eliminando base de datos anteriór...\n"
         cd config
 
@@ -188,9 +204,8 @@ restore_backup() {
         start_container
 
         echo -e "[+] Restaurando base de datos...\n"
-        cd config
         sleep 5
-        cat backup_postgres.sql | sudo docker-compose -f docker-compose.yml exec -T postgres psql -U admin -d postgres
+        cat "$back" | sudo docker-compose -f config/docker-compose.yml exec -T postgres psql -U admin -d postgres
         if [ "$?" -ne 0 ]
         then
             echo -e "[-] Ha surgido un error en la restauración de la BBDD\n"
@@ -198,7 +213,6 @@ restore_backup() {
         fi
         echo -e "[+] Restauración realizada con éxito...\n"
 
-        cd ..
         else
             echo -e "[+] Cancelando restauración de la copia de seguridad...\n"
     fi
@@ -242,10 +256,10 @@ then
     restore_backup
 
 else
-    echo "Uso: $0 { -start | -stop }"
+    echo "Uso: $0 { -start | -stop | -backup | -restore }"
     echo "  -start: Inicia el despliegue del contenedor"
     echo "  -stop: Detiene la ejecución del contenedor"
     echo "  -backup: Hace una copia de seguridad de todo"
-    echo "  -restore: Restaura la ultima copia de seguridad creada"
+    echo "  -restore: Restaura una copia de seguridad creada"
     exit 1
 fi
