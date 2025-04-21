@@ -1,4 +1,2 @@
 # Ignorar la carpeta external-addons
 external-addons/
-config/backup_postgres.sql
-backups/*
