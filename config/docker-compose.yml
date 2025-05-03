@@ -1,21 +1,64 @@
+#version: '3.8'
+
 services:
-    odoo:
-        image: odoo:14.0
-        env_file: .env
-        depends_on:
-            - postgres
-        ports:
-            - "8069:8069"
-        volumes:
-            - data:/var/lib/odoo
-            - ../external-addons:/mnt/extra-addons
-        restart: always
-    postgres:
-        image: postgres:13
-        env_file: .env
-        volumes:
-            - db:/var/lib/postgresql/data/pgdata
-        restart: always
+  db:
+    image: postgres:13
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: odoo
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    networks:
+      - odoo-net
+
+  odoo:
+    image: odoo:14
+    container_name: odoo
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: odoo
+      DB_PASSWORD: odoo
+      DB_NAME: odoo
+      ADMIN_PASSWORD: admin
+    command: >
+      /entrypoint.sh odoo
+      --http-interface=0.0.0.0
+    ports:
+      - "8069:8069"
+      - "4573:4573"             # Expone FastAGI hacia la red Docker
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ../external-addons:/mnt/extra-addons
+    networks:
+      - odoo-net
+
+  asterisk:
+    image: mlan/asterisk
+    container_name: asterisk
+    restart: always
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "5039:5038"             # AMI (si lo usas)
+      - "18088:8088"            # ARI (HTTP/8088)
+      - "10000-10100:10000-10100/udp"  # RTP media streams
+    volumes:
+      - ./asterisk-config:/etc/asterisk
+    networks:
+      - odoo-net
+
 volumes:
-    data:
-    db:
+  odoo-db-data:
+  odoo-data:
+
+networks:
+  odoo-net:
+    driver: bridge
+
