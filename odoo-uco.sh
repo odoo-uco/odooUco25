@@ -149,11 +149,6 @@ make_backup() {
 
         name=backup_$(date '+%d-%m-%Y_%H-%M')_manual.sql
 
-        mkdir ../backups
-        if [ "$?" -eq 0 ]
-        then
-            echo -e "[+] Carpeta backups creada...\n"
-        fi
         cp backup_postgres.sql ../backups/"$name"
 
         if [ -f backup_postgres_ant.sql ]
