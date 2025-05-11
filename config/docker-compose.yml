@@ -1,21 +1,58 @@
 services:
-    odoo:
-        image: odoo:14.0
-        env_file: .env
-        depends_on:
-            - postgres
-        ports:
-            - "8069:8069"
-        volumes:
-            - data:/var/lib/odoo
-            - ../external-addons:/mnt/extra-addons
-        restart: always
-    postgres:
-        image: postgres:13
-        env_file: .env
-        volumes:
-            - db:/var/lib/postgresql/data/pgdata
-        restart: always
+  odoo:
+    image: odoo:14.0
+    env_file: .env
+    depends_on:
+      - postgres
+    ports:
+      - "8069:8069"
+      - "4573:4573" # Expone FastAGI hacia la red Docker
+    volumes:
+      - data:/var/lib/odoo
+      - ../external-addons:/mnt/extra-addons
+    restart: always
+    container_name: odoo
+    networks:
+      - odoo-net
+    command: >
+      /entrypoint.sh odoo
+      --http-interface=0.0.0.0
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+  
+  postgres:
+    image: postgres:13
+    env_file: .env
+    volumes:
+        - db:/var/lib/postgresql/data/pgdata
+    restart: always
+    networks:
+      - odoo-net
+    container_name: postgres
+
+  asterisk:
+    image: mlan/asterisk
+    container_name: asterisk
+    restart: always
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "5038:5038"                    # AMI
+      - "8088:8088"                    # ARI
+      - "10000-10100:10000-10100/udp"  # RTP
+    volumes:
+      - ./asterisk-config:/etc/asterisk
+    networks:
+      - odoo-net
+
 volumes:
-    data:
-    db:
+  data:
+  db:
+
+networks:
+  odoo-net:
+    driver: bridge
