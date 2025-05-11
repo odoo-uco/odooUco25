@@ -143,7 +143,7 @@ scp -i "Odoo-UCO.pem" -r "{nombre_del_modulo}" ubuntu@ec2-3-250-75-10.eu-west-1.
 
 En este caso tambien debemos de tener el archivo Odoo-UCO.pem en la carpeta desde la que se ejecuta
 ```bash
-ssh -i "Odoo-UCO.pem" ubuntu@ec2-3-250-75-10.eu-west-1.compute.amazonaws.com
+ssh -i "Odoo-UCO.pem" ubuntu@http://ec2-3-250-75-10.eu-west-1.compute.amazonaws.com:8069/
 ```
 
 ### 4. Mover el Módulo a la Carpeta external-addons
