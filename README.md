@@ -136,14 +136,14 @@ Antes de instalar un módulo en la instancia de Odoo alojada en AWS, **comprueba
 Utiliza `scp` para copiar la carpeta del módulo al servidor a través de SSH, para podernos conectarnos a ssh debemos tener el archivo Odoo-UCO.pem (que se encuentra en Moodle, Documentos Seminario 2/Odoo-UCO.pem) en la carpeta la cual estamos ejecutando el comando. Por ejemplo:
 
 ```bash
-scp -i "Odoo-UCO.pem" -r "{nombre_del_modulo}" ubuntu@ec2-34-243-55-38.eu-west-1.compute.amazonaws.com:~
+scp -i "Odoo-UCO.pem" -r "{nombre_del_modulo}" ec2-34-251-79-148.eu-west-1.compute.amazonaws.com:~
 ```
 
 ### 3. Conectar al Servidor vía SSH
 
 En este caso tambien debemos de tener el archivo Odoo-UCO.pem en la carpeta desde la que se ejecuta
 ```bash
-ssh -i "Odoo-UCO.pem" ubuntu@ec2-34-243-55-38.eu-west-1.compute.amazonaws.com
+ssh -i "Odoo-UCO.pem" ec2-34-251-79-148.eu-west-1.compute.amazonaws.com
 ```
 
 ### 4. Mover el Módulo a la Carpeta external-addons
